@@ -1,3 +1,16 @@
+"""Custom xclim "indices" functions.
+
+This module contains custom implementations of xclim *indices* -- "the driving
+mechanisms behind Indicators".
+
+Most of these functions are basic re-implementations of existing xclim indices
+that use percentile-based array inputs. The native xclim implementations of these
+indices expect the percentile array to represent a single percentile. Our
+indices simply add the ability to pass the required percentiles as arguments,
+allowing to pass an array with a percentile dimension. This choice was made to
+allow easy materialization of multiple percentiles using Dagster partitions.
+"""
+
 from __future__ import annotations
 
 from typing import Literal, cast
@@ -9,31 +22,26 @@ from xclim.core.units import convert_units_to, declare_units, to_agg_units
 from xclim.indices import run_length
 from xclim.indices.generic import compare, threshold_count, get_op
 
-
-def declare_percentile(**percentiles_by_name):
-    def _inner(func: Callable[..., xr.DataArray]):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            bound_args = signature(func).bind(*args, **kwargs)
-            bound_args.apply_defaults()
-            for name, per in percentiles_by_name.items():
-                da = bound_args.arguments[name]
-                if not isinstance(da, xr.DataArray):
-                    raise ValueError(
-                        f'Argument {name} should be an xarray.DataArray, not {type(da)}'
-                    )
-                per_value = bound_args.arguments[per]
-                if not isinstance(per_value, (int, float)):
-                    raise ValueError(
-                        f'Percentile value should be an int or a float, not {type(per_value)}'
-                    )
-                bound_args.arguments[name] = da.sel(percentiles=per_value)
-
-            return func(*args, **bound_args.arguments)
-
-        return wrapper
-
-    return _inner
+__all__ = [
+    'cool_and_dry_days',
+    'cool_and_wet_days',
+    'cool_spell_frequency',
+    'cool_spell_max_amplitude',
+    'cool_spell_max_duration',
+    'cool_spell_total_days',
+    'pr_days_above_doy_thresh',
+    'pr_days_below_doy_thresh',
+    'tn_days_above_doy_thresh',
+    'tn_days_below_doy_thresh',
+    'tx_days_above_doy_thresh',
+    'tx_days_below_doy_thresh',
+    'warm_and_dry_days',
+    'warm_and_wet_days',
+    'warm_spell_frequency',
+    'warm_spell_max_amplitude',
+    'warm_spell_max_duration',
+    'warm_spell_total_days',
+]
 
 
 @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
@@ -49,8 +57,8 @@ def tx_days_above_doy_thresh(
     r"""Number of days with daily maximum temperature above the specified
     percentile threshold.
 
-    Number of days over period where maximum temperature is above a given
-    percentile for that day.
+    Number of days over the specified period where the maximum temperature is
+    above a given percentile for that day.
 
     Parameters
     ----------
@@ -106,8 +114,8 @@ def tx_days_below_doy_thresh(
     r"""Number of days with daily maximum temperature below a specified
     percentile threshold.
 
-    Number of days over period where maximum temperature is below a given
-    percentile for that day.
+    Number of days over the specified period where the maximum temperature is
+    below a given percentile for that day.
 
     Parameters
     ----------
@@ -163,8 +171,8 @@ def tn_days_above_doy_thresh(
     r"""Number of days with daily minimum temperature above a specified
     percentile threshold.
 
-    Number of days over period where minimum temperature is above a given
-    percentile for that day.
+    Number of days over the specified period where the minimum temperature is
+    above a given percentile for that day.
 
     Parameters
     ----------
@@ -220,8 +228,8 @@ def tn_days_below_doy_thresh(
     r"""Number of days with daily minimum temperature below a specified
     percentile threshold.
 
-    Number of days over period where minimum temperature is below a given
-    percentile for that day.
+    Number of days over the specified period where the minimum temperature is
+    below a given percentile for that day.
 
     Parameters
     ----------
@@ -276,8 +284,8 @@ def pr_days_above_doy_thresh(
 ) -> xr.DataArray:
     r"""Number of days with daily precipitation above a given percentile.
 
-    Number of days over period where precipitation is above a given percentile
-    for that day.
+    Number of days over the specified period where precipitation is above a
+    given percentile for that day.
 
     Parameters
     ----------
@@ -326,8 +334,8 @@ def pr_days_below_doy_thresh(
 ) -> xr.DataArray:
     r"""Number of days with daily precipitation below a given percentile.
 
-    Number of days over period where precipitation is below a given percentile
-    for that day.
+    Number of days over the specified period where precipitation is below a
+    given percentile for that day.
 
      Parameters
      ----------
@@ -384,8 +392,8 @@ def warm_and_wet_days(
 ) -> xr.DataArray:
     r"""Days with warm and wet conditions.
 
-    Number of days when both daily maximum temperature and
-    precipitation are above specified percentiles for that day.
+    Number of days when both daily maximum temperature and precipitation are
+    above specified percentiles for that day.
 
     Parameters
     ----------

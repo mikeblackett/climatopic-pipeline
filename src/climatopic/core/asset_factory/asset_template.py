@@ -26,9 +26,14 @@ EMPTY_ASSET_KEY_SENTINEL = AssetKey([])
 
 class AssetTemplate:
     """
-    Defines an asset template.
+    Defines an asset template for creating and transforming assets.
 
-    An asset template is a blueprint for creating and transforming assets.
+    An asset template is used to define a general asset specification that can
+    be reused throughout the DAG. You can pass around `AssetTemplates` to
+    define implicit dependencies across modules. Importing templates instead of
+    fully-fledged Dagster asset definitions means that you can import them and
+    still use Dagster utilities like `Dagster.load_assets_from_modules()`
+    without incurring duplicate asset errors.
 
     Attributes
     ----------
@@ -446,10 +451,15 @@ class AssetTemplate:
 
 class AssetGroup:
     """
-    Defines an asset group.
+    Defines a group of asset templates that share a common specification and
+    materialization strategy.
 
-    An asset group is a collection of asset templates that share a common
-    specification and materialization strategy.
+    The properties defined on the asset group are shared by the asset
+    templates in the group. Any existing template properties are merged with
+    the group properties.
+
+    Asset groups are not typically created directly but are instead created
+    behind the scenes when using the `@asset_factory` decorator.
 
     Attributes
     ----------
@@ -491,7 +501,6 @@ class AssetGroup:
     tags: Mapping[str, str]
         A dictionary of tags for filtering and organizing. These tags are not
         attached to runs of the asset.
-
     """
 
     def __init__(

@@ -1,3 +1,5 @@
+"""An custom xclim indicator module"""
+
 from pathlib import Path
 
 from . import indices
@@ -11,4 +13,5 @@ indicators = build_indicator_module_from_yaml(
     filename=Path(__file__).parent / 'indicators.yaml',
     indices=indices,
     mode='raise',
+    validate=False,
 )
