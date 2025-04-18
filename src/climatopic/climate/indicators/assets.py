@@ -92,7 +92,7 @@ def assets(
     indicator: Callable[..., xr.DataArray] = getattr(indicators, name)
     input_kwargs = datasets_to_data_arrays(ins_kwargs)
     frequency = get_partition_key(context=context, dimension='frequency')
-    freq = Frequency(frequency.upper()).value
+    freq = Frequency[frequency.upper()].value
     ds: xr.Dataset = (
         indicator(**input_kwargs, freq=freq)
         .to_dataset()
