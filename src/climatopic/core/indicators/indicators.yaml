@@ -278,29 +278,29 @@ indicators:
   warm_and_dry_days:
     compute: warm_and_dry_days
     parameters:
-      warm_per_thresh: 90
-      dry_per_thresh: 10
+      tasmax_per_thresh: 90
+      pr_per_thresh: 10
     keywords: temperature precipitation count relative
 
   warm_and_wet_days:
     compute: warm_and_wet_days
     parameters:
-      warm_per_thresh: 90
-      wet_per_thresh: 90
+      tasmax_per_thresh: 90
+      pr_per_thresh: 90
     keywords: temperature precipitation count relative
 
   cool_and_dry_days:
     compute: cool_and_dry_days
     parameters:
-      cool_per_thresh: 10
-      dry_per_thresh: 10
+      tasmax_per_thresh: 10
+      pr_per_thresh: 10
     keywords: temperature precipitation count relative
 
   cool_and_wet_days:
     compute: cool_and_wet_days
     parameters:
-      cool_per_thresh: 10
-      wet_per_thresh: 90
+      tasmax_per_thresh: 10
+      pr_per_thresh: 90
     keywords: temperature precipitation count relative
 
   warm_and_dry_nights:
@@ -309,8 +309,10 @@ indicators:
       tasmax: tasmin
       tasmax_per: tasmin_per
     parameters:
-      warm_per_thresh: 90
-      dry_per_thresh: 10
+      tasmax_per_thresh:
+        name: tasmin_per_thresh
+        default: 90
+      pr_per_thresh: 10
 
   warm_and_wet_nights:
     base: .warm_and_wet_days
@@ -318,8 +320,10 @@ indicators:
       tasmax: tasmin
       tasmax_per: tasmin_per
     parameters:
-      warm_per_thresh: 90
-      wet_per_thresh: 90
+      tasmax_per_thresh:
+        name: tasmin_per_thresh
+        default: 90
+      pr_per_thresh: 90
 
   cold_and_dry_nights:
     base: .cool_and_dry_days
@@ -327,8 +331,10 @@ indicators:
       tasmax: tasmin
       tasmax_per: tasmin_per
     parameters:
-      cool_per_thresh: 10
-      dry_per_thresh: 10
+      tasmax_per_thresh:
+        name: tasmin_per_thresh
+        default: 10
+      pr_per_thresh: 10
 
   cold_and_wet_nights:
     base: .cool_and_wet_days
@@ -336,8 +342,10 @@ indicators:
       tasmax: tasmin
       tasmax_per: tasmin_per
     parameters:
-      cool_per_thresh: 10
-      wet_per_thresh: 90
+      tasmax_per_thresh:
+        name: tasmin_per_thresh
+        default: 10
+      pr_per_thresh: 90
 
 
   #  ----------------------------------------------------------------- EXTREMES
@@ -435,33 +443,33 @@ indicators:
     parameters:
       thresh: 1 mm/d
     cf_attrs:
-      long_name: "Maximum number of consecutive wet days (> {thresh})"
+      long_name: Maximum number of consecutive wet days (> {thresh})
     keywords: count fixed
 
   #  --------------------------------------------------------------------- MEAN
   average_temperature:
     base: tg_mean
-    src_freq: 'MS'
+    src_freq: MS
     keywords: mean
 
   average_max_temperature:
     base: tx_mean
-    src_freq: 'MS'
+    src_freq: MS
     keywords: mean
 
   average_min_temperature:
     base: tn_mean
-    src_freq: 'MS'
+    src_freq: MS
     keywords: mean
 
   average_precipitation:
     base: prcpavg
-    src_freq: 'MS'
+    src_freq: MS
     keywords: mean
 
   #  ---------------------------------------------------------------------- SUM
 
   total_precipitation:
     base: prcptot
-    src_freq: 'MS'
+    src_freq: MS
     keywords: sum

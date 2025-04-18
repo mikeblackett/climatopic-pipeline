@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from functools import wraps
-from inspect import signature
 from typing import Literal, cast
 
 import xarray as xr
@@ -379,8 +376,8 @@ def warm_and_wet_days(
     pr: xr.DataArray,
     tasmax_per: xr.DataArray,
     pr_per: xr.DataArray,
-    warm_per_thresh: float = 75,
-    wet_per_thresh: float = 75,
+    tasmax_per_thresh: float = 75,
+    pr_per_thresh: float = 75,
     freq: str = 'YS',
     bootstrap: bool = False,  # noqa
     op: str = '>',
@@ -399,9 +396,9 @@ def warm_and_wet_days(
         Percentiles of daily maximum temperature.
     pr_per : xarray.DataArray
         Percentiles of daily (wet-day) precipitation flux.
-    warm_per_thresh : float
+    tasmax_per_thresh : float
         Percentile threshold for warm days.
-    wet_per_thresh : float
+    pr_per_thresh : float
         Percentile threshold for wet days.
     freq : str
         Resampling frequency.
@@ -419,22 +416,22 @@ def warm_and_wet_days(
     -------
     xr.DataArray, [time]
       Count of days with daily maximum temperature above the
-      {warm_per_thresh}th percentile and precipitation above the
-      {dry_per_thresh}th percentile [days].
+      {tasmax_per_thresh}th percentile and precipitation above the
+      {pr_per_thresh}th percentile [days].
     """
     comparator = get_op(op=op, constrain=('>', '>='))
 
     tasmax_per = cast(
         xr.DataArray,
         convert_units_to(source=tasmax_per, target=tasmax),
-    ).sel(percentiles=warm_per_thresh)
+    ).sel(percentiles=tasmax_per_thresh)
     tasmax_thresh = resample_doy(tasmax_per, tasmax)
     tasmax_above = comparator(tasmax, tasmax_thresh)
 
     pr_per = cast(
         xr.DataArray,
         convert_units_to(source=pr_per, target=pr, context='hydro'),
-    ).sel(percentiles=wet_per_thresh)
+    ).sel(percentiles=pr_per_thresh)
     pr_thresh = resample_doy(doy=pr_per, arr=pr)
     pr_above = comparator(pr, pr_thresh)
 
@@ -454,8 +451,8 @@ def warm_and_dry_days(
     pr: xr.DataArray,
     tasmax_per: xr.DataArray,
     pr_per: xr.DataArray,
-    warm_per_thresh: float = 75,
-    dry_per_thresh: float = 25,
+    tasmax_per_thresh: float = 75,
+    pr_per_thresh: float = 25,
     freq: str = 'YS',
     bootstrap: bool = False,  # noqa
     op: str = '>',
@@ -476,9 +473,9 @@ def warm_and_dry_days(
         Percentiles of daily maximum temperature.
     pr_per : xarray.DataArray
         Percentiles of precipitation flux.
-    warm_per_thresh : float
+    tasmax_per_thresh : float
         Percentile threshold for warm days.
-    dry_per_thresh : float
+    pr_per_thresh : float
         Percentile threshold for dry days.
     freq : str
         Resampling frequency.
@@ -496,22 +493,22 @@ def warm_and_dry_days(
     -------
     xarray.DataArray, [time]
         Count of days with daily maximum temperature above the
-        {warm_per_thresh}th percentile and precipitation below the
-        {dry_per_thresh}th percentile [days].
+        {tasmax_per_thresh}th percentile and precipitation below the
+        {pr_per_thresh}th percentile [days].
     """
     comparator = get_op(op=op, constrain=('>', '>='))
 
     tasmax_per = cast(
         xr.DataArray,
         convert_units_to(source=tasmax_per, target=tasmax),
-    ).sel(percentiles=warm_per_thresh)
+    ).sel(percentiles=tasmax_per_thresh)
     tasmax_thresh = resample_doy(tasmax_per, tasmax)
     tasmax_above = comparator(tasmax, tasmax_thresh)
 
     pr_per = cast(
         xr.DataArray,
         convert_units_to(source=pr_per, target=pr, context='hydro'),
-    ).sel(percentiles=dry_per_thresh)
+    ).sel(percentiles=pr_per_thresh)
     pr_thresh = resample_doy(doy=pr_per, arr=pr)
     pr_below = comparator(pr, pr_thresh)
 
@@ -531,8 +528,8 @@ def cool_and_wet_days(
     pr: xr.DataArray,
     tasmax_per: xr.DataArray,
     pr_per: xr.DataArray,
-    cool_per_thresh: float = 10,
-    wet_per_thresh: float = 90,
+    tasmax_per_thresh: float = 10,
+    pr_per_thresh: float = 90,
     freq: str = 'YS',
     bootstrap: bool = False,  # noqa
     op: str = '<',
@@ -553,9 +550,9 @@ def cool_and_wet_days(
         Percentiles of daily maximum temperature.
     pr_per : xarray.DataArray
         Percentiles of precipitation flux.
-    cool_per_thresh : float
+    tasmax_per_thresh : float
         Percentile threshold for cool days.
-    wet_per_thresh : float
+    pr_per_thresh : float
         Percentile threshold for wet days.
     freq : str
         Resampling frequency.
@@ -573,22 +570,21 @@ def cool_and_wet_days(
     -------
     xarray.DataArray, [time]
         Count of days with daily maximum temperature below the
-        {warm_per_thresh}th percentile and precipitation above the
-        {dry_per_thresh}th percentile [days].
+        {tasmax_per_thresh}th percentile and precipitation above the
+        {pr_per_thresh}th percentile [days].
     """
     comparator = get_op(op=op, constrain=('<', '<='))
-
     tasmax_per = cast(
         xr.DataArray,
         convert_units_to(source=tasmax_per, target=tasmax),
-    ).sel(percentiles=cool_per_thresh)
+    ).sel(percentiles=tasmax_per_thresh)
     tasmax_thresh = resample_doy(tasmax_per, tasmax)
     tasmax = comparator(tasmax, tasmax_thresh)
 
     pr_per = cast(
         xr.DataArray,
         convert_units_to(source=pr_per, target=pr, context='hydro'),
-    ).sel(percentiles=wet_per_thresh)
+    ).sel(percentiles=pr_per_thresh)
     pr_thresh = resample_doy(doy=pr_per, arr=pr)
     pr_above = comparator(pr, pr_thresh)
 
@@ -608,8 +604,8 @@ def cool_and_dry_days(
     pr: xr.DataArray,
     tasmax_per: xr.DataArray,
     pr_per: xr.DataArray,
-    cool_per_thresh: float = 10,
-    dry_per_thresh: float = 90,
+    tasmax_per_thresh: float = 10,
+    pr_per_thresh: float = 90,
     freq: str = 'YS',
     bootstrap: bool = False,  # noqa
     op: str = '<',
@@ -629,9 +625,9 @@ def cool_and_dry_days(
         Percentiles of daily maximum temperature.
     pr_per : xarray.DataArray
         Percentiles of precipitation flux.
-    cool_per_thresh : float
+    tasmax_per_thresh : float
         Percentile threshold for cool days.
-    dry_per_thresh : float
+    pr_per_thresh : float
         Percentile threshold for dry days.
     freq : str
         Resampling frequency.
@@ -649,22 +645,22 @@ def cool_and_dry_days(
     -------
     xarray.DataArray, [time]
         Count of days with daily maximum temperature below the
-        {warm_per_thresh}th percentile and precipitation below the
-        {dry_per_thresh}th percentile [days].
+        {tasmax_per_thresh}th percentile and precipitation below the
+        {pr_per_thresh}th percentile [days].
     """
     comparator = get_op(op=op, constrain=('<', '<='))
 
     tasmax_per = cast(
         xr.DataArray,
         convert_units_to(source=tasmax_per, target=tasmax),
-    ).sel(percentiles=cool_per_thresh)
+    ).sel(percentiles=tasmax_per_thresh)
     tasmax_thresh = resample_doy(tasmax_per, tasmax)
     tasmax = comparator(tasmax, tasmax_thresh)
 
     pr_per = cast(
         xr.DataArray,
         convert_units_to(source=pr_per, target=pr, context='hydro'),
-    ).sel(percentiles=dry_per_thresh)
+    ).sel(percentiles=pr_per_thresh)
     pr_thresh = resample_doy(doy=pr_per, arr=pr)
     pr_below = comparator(pr, pr_thresh)
 
@@ -673,6 +669,7 @@ def cool_and_dry_days(
     return to_agg_units(out=resampled, orig=tasmax, op='count')
 
 
+# ----------------------------------------------------------------- WARM SPELLS
 @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
 def warm_spell_total_days(
     tasmax: xr.DataArray,
@@ -715,7 +712,7 @@ def warm_spell_total_days(
     xr.DataArray, [days]
         Total number of days during warm spell events lasting at least
         {window} consecutive days, with daily maximum temperature above the
-        {tasmax_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmax_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmax
@@ -774,7 +771,7 @@ def warm_spell_frequency(
     xr.DataArray
         Total number of warm spell events lasting at least {window}
         consecutive days, with daily maximum temperature above the
-        {tasmax_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmax_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmax
@@ -835,7 +832,7 @@ def warm_spell_max_duration(
     xr.DataArray, [days]
         Duration of the longest warm spell event lasting at least {window}
         consecutive days, with daily maximum temperature above the
-        {tasmax_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmax_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmax
@@ -889,10 +886,12 @@ def warm_spell_max_amplitude(
     Returns
     -------
     xr.DataArray, [degK]
-        Maximum cumulative deviation from the {tasmax_per_thresh}th percentile
+        Maximum cumulative deviation from the {per_thresh}th percentile
         during a warm spell event lasting at least {window} consecutive
     """
-    thresh = convert_units_to(source=tasmax_per, target=tasmax)
+    thresh = tasmax_per.sel(percentiles=per_thresh).pipe(
+        convert_units_to, target=tasmax
+    )
     assert isinstance(thresh, xr.DataArray)
     thresh = resample_doy(doy=thresh, arr=tasmax)
     above_values = (tasmax - thresh).clip(0)
@@ -951,7 +950,7 @@ def cool_spell_total_days(
     xr.DataArray, [days]
         Total number of days during cool spell events lasting at least
         {window} consecutive days, with daily minimum temperature below the
-        {tas_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmin_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmin
@@ -1010,7 +1009,7 @@ def cool_spell_frequency(
     xr.DataArray
         Total number of cool spell events lasting at least {window}
         consecutive days, with daily minimum temperature below the
-        {tas_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmin_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmin
@@ -1071,7 +1070,7 @@ def cool_spell_max_duration(
     xr.DataArray, [days]
         Duration of the longest cool spell event lasting at least {window}
         consecutive days, with daily minimum temperature below the
-        {tas_per_thresh}th percentile.
+        {per_thresh}th percentile.
     """
     thresh = tasmin_per.sel(percentiles=per_thresh).pipe(
         convert_units_to, target=tasmin
@@ -1125,7 +1124,7 @@ def cool_spell_max_amplitude(
     Returns
     -------
     xr.DataArray, [degK]
-        Maximum cumulative deviation from the {tas_per_thresh}th percentile
+        Maximum cumulative deviation from the {per_thresh}th percentile
         during a cool spell event lasting at least {window} consecutive days.
     """
     thresh = tasmin_per.sel(percentiles=per_thresh).pipe(
@@ -1144,173 +1143,27 @@ def cool_spell_max_amplitude(
     return to_agg_units(out=out, orig=tasmin, op='integral')
 
 
-# ------------------------------------------------------------------- COLDWAVES
-# @declare_units(tasmin='[temperature]', thresh='[temperature]')
-# def coldwave_max_magnitude(
-#     tasmin: xr.DataArray,
-#     thresh: Quantified = '-10 degC',
-#     window: int = 3,
-#     freq: str = 'YS',
-#     resample_before_rl: bool = True,
-# ) -> xr.DataArray:
-#     """
-#     Coldwave maximum amplitude
+# def declare_percentile(**percentiles_by_name):
+#     def _inner(func: Callable[..., xr.DataArray]):
+#         @wraps(func)
+#         def wrapper(*args, **kwargs):
+#             bound_args = signature(func).bind(*args, **kwargs)
+#             bound_args.apply_defaults()
+#             for name, per in percentiles_by_name.items():
+#                 da = bound_args.arguments[name]
+#                 if not isinstance(da, xr.DataArray):
+#                     raise ValueError(
+#                         f'Argument {name} should be an xarray.DataArray, not {type(da)}'
+#                     )
+#                 per_value = bound_args.arguments[per]
+#                 if not isinstance(per_value, (int, float)):
+#                     raise ValueError(
+#                         f'Percentile value should be an int or a float, not {type(per_value)}'
+#                     )
+#                 bound_args.arguments[name] = da.sel(percentiles=per_value)
 #
-#     Magnitude of the most intensive heat wave event as sum of differences between tasmax
-#     and the given threshold for Heat Wave days, defined as three or more consecutive days
-#     over the threshold.
+#             return func(*args, **bound_args.arguments)
 #
-#     Parameters
-#     ----------
-#     tasmin : xr.DataArray
-#         Maximum daily temperature.
-#     thresh : Quantified
-#         Threshold temperature on which to designate a coldwave.
-#     window : int
-#         Minimum number of days with temperature above threshold to qualify as a heatwave.
-#     freq : str
-#         Resampling frequency.
-#     resample_before_rl : bool
-#         Determines if the resampling should take place before or after the run
-#         length encoding (or a similar algorithm) is applied to runs.
+#         return wrapper
 #
-#     Returns
-#     -------
-#     DataArray, [time]
-#         Hot spell maximum magnitude.
-#
-#     References
-#     ----------
-#     :cite:cts:`russo_magnitude_2014,zhang_high_2022`.
-#     """
-#     thresh_ = convert_units_to(thresh, tasmin)
-#     over_values = (tasmin - thresh_).clip(0)
-#
-#     out = run_length.resample_and_rl(
-#         over_values,
-#         resample_before_rl,
-#         run_length.windowed_max_run_sum,
-#         window=window,
-#         freq=freq,
-#     )
-#     return to_agg_units(out, tasmin, op='integral')
-# @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
-# def warm_days(
-#     tasmax: xr.DataArray,
-#     tasmax_per: xr.DataArray,
-#     per_thresh: float = 90,
-#     freq: str = 'YS',
-#     bootstrap: bool = False,
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     tasmax_per = tasmax_per.sel(percentiles=per_thresh)
-#     return tx90p(
-#         tasmax=tasmax,
-#         tasmax_per=tasmax_per,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
-#
-#
-# @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
-# def cool_days(
-#     tasmax: xr.DataArray,
-#     tasmax_per: xr.DataArray,
-#     per_thresh: float = 10,
-#     freq: str = 'YS',
-#     bootstrap: bool = False,
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     tasmax_per = tasmax_per.sel(percentiles=per_thresh)
-#     return tx10p(
-#         tasmax=tasmax,
-#         tasmax_per=tasmax_per,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
-#
-#
-# @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
-# def warm_nights(
-#     tasmin: xr.DataArray,
-#     tasmin_per: xr.DataArray,
-#     per_thresh: float = 90,
-#     freq: str = 'YS',
-#     bootstrap: bool = False,
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     tasmin_per = tasmin_per.sel(percentiles=per_thresh)
-#     return tn90p(
-#         tasmin=tasmin,
-#         tasmin_per=tasmin_per,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
-#
-#
-# @declare_units(tasmax='[temperature]', tasmax_per='[temperature]')
-# def cool_nights(
-#     tasmin: xr.DataArray,
-#     tasmin_per: xr.DataArray,
-#     per_thresh: float = 10,
-#     freq: str = 'YS',
-#     bootstrap: bool = False,
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     tasmin_per = tasmin_per.sel(percentiles=per_thresh)
-#     return tn10p(
-#         tasmin=tasmin,
-#         tasmin_per=tasmin_per,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
-#
-#
-# @declare_units(
-#     pr='[precipitation]', pr_per='[precipitation]', thresh='[precipitation]'
-# )
-# def very_wet_days(
-#     pr: xr.DataArray,
-#     pr_per: xr.DataArray,
-#     per_thresh: float = 95,
-#     thresh: Quantified = '1 mm/day',
-#     freq: str = 'YS',
-#     bootstrap: bool = False,  # noqa
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     pr_per = pr_per.sel(percentiles=per_thresh)
-#     return days_over_precip_thresh(
-#         pr=pr,
-#         pr_per=pr_per,
-#         thresh=thresh,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
-#
-#
-# @declare_units(
-#     pr='[precipitation]', pr_per='[precipitation]', thresh='[precipitation]'
-# )
-# def extremely_wet_days(
-#     pr: xr.DataArray,
-#     pr_per: xr.DataArray,
-#     per_thresh: float = 99,
-#     thresh: Quantified = '1 mm/day',
-#     freq: str = 'YS',
-#     bootstrap: bool = False,  # noqa
-#     op: str = '>',
-# ) -> xr.DataArray:
-#     pr_per = pr_per.sel(percentiles=per_thresh)
-#     return days_over_precip_thresh(
-#         pr=pr,
-#         pr_per=pr_per,
-#         thresh=thresh,
-#         freq=freq,
-#         op=op,
-#         bootstrap=bootstrap,
-#     )
+#     return _inner
