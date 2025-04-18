@@ -449,27 +449,22 @@ indicators:
   #  --------------------------------------------------------------------- MEAN
   average_temperature:
     base: tg_mean
-    src_freq: MS
     keywords: mean
 
   average_max_temperature:
     base: tx_mean
-    src_freq: MS
     keywords: mean
 
   average_min_temperature:
     base: tn_mean
-    src_freq: MS
     keywords: mean
 
   average_precipitation:
     base: prcpavg
-    src_freq: MS
     keywords: mean
 
   #  ---------------------------------------------------------------------- SUM
 
   total_precipitation:
     base: prcptot
-    src_freq: MS
     keywords: sum
