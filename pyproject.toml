@@ -1,0 +1,57 @@
+[project]
+name = "climatopic"
+version = "0.0.0"
+description = "Default template for PDM package"
+authors = [
+    { name = "Mike Blackett", email = "27811528+mikeblackett@users.noreply.github.com" },
+]
+dependencies = ["dagster>=1.10.10", "dagster-webserver>=1.10.10", "bottleneck>=1.4.2", "cf-xarray>=0.10.0", "dask>=2024.11.2", "flox>=0.9.15", "geocube>=0.7.0", "geopandas>=1.0.1", "h5netcdf>=1.4.1", "netcdf4>=1.7.2", "numbagg>=0.8.2", "numpy>=2.0.2", "packaging>=24.2", "pandas>=2.2.3", "pandera>=0.21.0", "pint>=0.24.4", "pint-xarray>=0.4", "pooch>=1.8.2", "xclim>=0.53.2", "zarr>=3.0.6", "distributed>=2024.11.2", "ipykernel>=6.29.5", "yamale>=5.2.1", "matplotlib>=3.10.0", "pydantic>=2.10.4", "setuptools>=75.6.0", "pydantic-yaml>=1.4.0", "ruff>=0.9.2", "xarray>=2025.3.1", "bokeh>=3.7.2", "psutil>=7.0.0"]
+
+requires-python = "==3.12.*"
+readme = "README.md"
+license = { text = "MIT" }
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "-e file:///home/mike/Documents/Programming/climatopic-xarray#egg=climatopic-xarray",
+    "-e file:///home/mike/Documents/Programming/xarray-schema#egg=xarray-schema",
+]
+
+[tool.pdm.scripts]
+dev = "dagster dev"
+
+[tool.dagster]
+module_name = "src.climatopic"
+code_location_name = "climatopic"
+
+[tool.ruff]
+line-length = 79
+indent-width = 4
+extend-include = ["*.ipynb"]
+
+[tool.ruff.format]
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "single"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+preview = true
+
+[tool.pyright]
+reportUnknownMemberType = false
+extraPaths = [
+    "/home/mike/Documents/Programming/xarray-schema/",
+    "/home/mike/Documents/Programming/climatopic_xarray/",
+]
+
+[dependency-groups]
+dev = [
+    "notebook>=7.4.0",
+    "ipykernel>=6.29.5",
+]

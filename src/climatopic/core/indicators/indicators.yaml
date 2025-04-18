@@ -1,0 +1,467 @@
+doc: |
+  =====================
+  Climatopic Indicators
+  =====================
+realm: atmos
+
+variables:
+  tas_per:
+    description: Day-of-year percentiles of mean daily temperature
+    canonical_units: K
+  tasmax_per:
+    description: Day-of-year percentiles of maximum daily temperature
+    canonical_units: K
+  tasmin_per:
+    description: Day-of-year percentiles of minimum daily temperature
+    canonical_units: K
+  pr_per:
+    description: Day-of-year percentiles of daily precipitation flux
+    canonical_units: kg m-2 s-1
+
+indicators:
+  #  --------------------------------------------------------- COUNT (RELATIVE)
+  #  --- Warm spells
+  warm_spell_total_days:
+    compute: warm_spell_total_days
+    title: Warm spell total days
+    abstract: >-
+      The total number of days that are part of warm spell events within the
+      specified period.
+      A warm spell is defined as a period when the daily maximum temperature
+      exceeds a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      standard_name: number_of_days_with_air_temperature_above_threshold
+      description: >-
+        Total {freq} number of days that are part of warm spell events within
+        the specified period.
+        A warm spell is defined as a period when the daily maximum temperature
+        exceeds the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Total number of days during warm spell events lasting at least
+        {window} consecutive days, with daily maximum temperature above the
+        {per_thresh}th percentile.
+      units: days
+    parameters:
+      window: 3
+      per_thresh: 90
+    keywords: temperature count relative
+
+  warm_spell_frequency:
+    compute: warm_spell_frequency
+    title: Warm spell frequency
+    abstract: >-
+      The total number of warm spell events during the specified period.
+      A warm spell is defined as a period when the daily maximum temperature
+      exceeds a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        Total {freq} number of warm spell events during the specified period.
+        A warm spell is defined as a period when the daily maximum temperature
+        exceeds the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Total number of warm spell events lasting at least {window}
+        consecutive days, with daily maximum temperature above the
+        {per_thresh}th percentile.
+    parameters:
+      window: 3
+      per_thresh: 90
+    keywords: temperature count relative
+
+  warm_spell_max_duration:
+    compute: warm_spell_max_duration
+    title: Warm spell maximum duration
+    abstract: >-
+      The maximum length of a single warm spell event within the specified
+      period.
+      A warm spell is defined as a period when the daily maximum temperature
+      exceeds a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        The maximum {freq} number of consecutive days that occur within a
+        single warm spell event over the specified period.
+        A warm spell is defined as a period when the daily maximum temperature
+        exceeds the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Duration of the longest warm spell event lasting at least {window}
+        consecutive days, with daily maximum temperature above the
+        {per_thresh}th percentile.
+      units: days
+    parameters:
+      window: 3
+      per_thresh: 90
+    keywords: temperature count relative
+
+  warm_spell_max_amplitude:
+    compute: warm_spell_max_amplitude
+    title: Warm spell maximum amplitude
+    abstract: >-
+      The maximum cumulative deviation from the percentile threshold during a
+      warm spell event.
+      A warm spell is defined as a period when the daily maximum temperature
+      exceeds a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        The {freq} maximum cumulative deviation from the percentile threshold
+        during a warm spell event.
+        A warm spell is defined as a period when the daily maximum temperature
+        exceeds the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Maximum cumulative deviation from the {per_thresh}th percentile
+        during a warm spell event lasting at least {window} consecutive days.
+      units: degK
+    parameters:
+      window: 3
+      per_thresh: 90
+    keywords: temperature count relative
+
+  #  --- Cold spells
+  cool_spell_total_days:
+    compute: cool_spell_total_days
+    title: Cold spell total days
+    abstract: >-
+      The total number of days that are part of cool spell events within
+      the specified period.
+      A cool spell is defined as a period when the daily minimum temperature
+      is below a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      standard_name: number_of_days_with_air_temperature_below_threshold
+      description: >-
+        Total {freq} number of days that are part of cool spell events within
+        the specified period.
+        A cool spell is defined as a period when the daily minimum temperature
+        is below the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Total number of days during cool spell events lasting at least
+        {window} consecutive days, with daily minimum temperature below the
+        {per_thresh}th percentile.
+      units: days
+    parameters:
+      window: 3
+      per_thresh: 10
+    keywords: temperature count relative
+
+  cool_spell_frequency:
+    compute: cool_spell_frequency
+    title: Cold spell frequency
+    abstract: >-
+      The total number of cool spell events during the specified period.
+      A cool spell is defined as a period when the daily minimum temperature
+      is below a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        Total {freq} number of cool spell events during the specified period.
+        A cool spell is defined as a period when the daily minimum temperature
+        is below the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Total number of cool spell events lasting at least {window}
+        consecutive days, with daily minimum temperature below the
+        {per_thresh}th percentile.
+    parameters:
+      window: 3
+      per_thresh: 10
+    keywords: temperature count relative
+
+  cool_spell_max_duration:
+    compute: cool_spell_max_duration
+    title: Cold spell maximum duration
+    abstract: >-
+      The maximum length of a single cool spell event within the specified
+      period.
+      A cool spell is defined as a period when the daily minimum temperature
+      is below a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        The maximum {freq} number of consecutive days that occur within a
+        single cool spell event over the specified period.
+        A cool spell is defined as a period when the daily minimum temperature
+        is below the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Duration of the longest cool spell event lasting at least {window}
+        consecutive days, with daily minimum temperature below the
+        {per_thresh}th percentile.
+      units: days
+    parameters:
+      window: 3
+      per_thresh: 10
+    keywords: temperature count relative
+
+  cool_spell_max_amplitude:
+    compute: cool_spell_max_amplitude
+    title: Cold spell maximum amplitude
+    abstract: >-
+      The maximum cumulative deviation from the percentile threshold during a
+      cool spell event.
+      A cool spell is defined as a period when the daily minimum temperature
+      is below a specified percentile-based threshold for at least a minimum
+      number of consecutive days.
+    cf_attrs:
+      description: >-
+        The {freq} maximum cumulative deviation from the percentile threshold
+        during a cool spell event.
+        A cool spell is defined as a period when the daily minimum temperature
+        is below the {per_thresh}th percentile for at least {window}
+        consecutive days.
+      long_name: >-
+        Maximum cumulative deviation from the {per_thresh}th percentile
+        during a cool spell event lasting at least {window} consecutive days.
+      units: degK
+    parameters:
+      window: 3
+      per_thresh: 10
+    keywords: temperature count relative
+
+  warm_days:
+    compute: tx_days_above_doy_thresh
+    title: Warm days
+    abstract: >-
+      Number of days with daily maximum temperature above the specified 
+      percentile threshold.
+    cf_attrs:
+      description: >-
+        The {freq} number of days with daily maximum temperature above the
+        {per_thresh}th percentile.
+        The percentile threshold is calculated over the {tasmax_per_period}
+        reference period using a {tasmax_per_window}-day rolling window centered on 
+        each calendar day.
+      long_name: >-
+        Count of days with daily maximum temperature above the {per_thresh}th
+        percentile [days].
+      units: days
+    parameters:
+      per_thresh: 90
+    keywords: temperature count relative
+
+  warm_nights:
+    compute: tn_days_above_doy_thresh
+    parameters:
+      per_thresh: 90
+    keywords: temperature count relative
+
+  cool_days:
+    compute: tx_days_below_doy_thresh
+    parameters:
+      per_thresh: 10
+    keywords: temperature count relative
+
+  cool_nights:
+    compute: tn_days_below_doy_thresh
+    parameters:
+      per_thresh: 10
+    keywords: temperature count relative
+
+  very_wet_days:
+    compute: pr_days_above_doy_thresh
+    parameters:
+      per_thresh: 95
+    keywords: precipitation count relative
+
+  extremely_wet_days:
+    compute: pr_days_above_doy_thresh
+    parameters:
+      per_thresh: 99
+    keywords: precipitation count relative
+
+  warm_and_dry_days:
+    compute: warm_and_dry_days
+    parameters:
+      warm_per_thresh: 90
+      dry_per_thresh: 10
+    keywords: temperature precipitation count relative
+
+  warm_and_wet_days:
+    compute: warm_and_wet_days
+    parameters:
+      warm_per_thresh: 90
+      wet_per_thresh: 90
+    keywords: temperature precipitation count relative
+
+  cool_and_dry_days:
+    compute: cool_and_dry_days
+    parameters:
+      cool_per_thresh: 10
+      dry_per_thresh: 10
+    keywords: temperature precipitation count relative
+
+  cool_and_wet_days:
+    compute: cool_and_wet_days
+    parameters:
+      cool_per_thresh: 10
+      wet_per_thresh: 90
+    keywords: temperature precipitation count relative
+
+  warm_and_dry_nights:
+    base: .warm_and_dry_days
+    input:
+      tasmax: tasmin
+      tasmax_per: tasmin_per
+    parameters:
+      warm_per_thresh: 90
+      dry_per_thresh: 10
+
+  warm_and_wet_nights:
+    base: .warm_and_wet_days
+    input:
+      tasmax: tasmin
+      tasmax_per: tasmin_per
+    parameters:
+      warm_per_thresh: 90
+      wet_per_thresh: 90
+
+  cold_and_dry_nights:
+    base: .cool_and_dry_days
+    input:
+      tasmax: tasmin
+      tasmax_per: tasmin_per
+    parameters:
+      cool_per_thresh: 10
+      dry_per_thresh: 10
+
+  cold_and_wet_nights:
+    base: .cool_and_wet_days
+    input:
+      tasmax: tasmin
+      tasmax_per: tasmin_per
+    parameters:
+      cool_per_thresh: 10
+      wet_per_thresh: 90
+
+
+  #  ----------------------------------------------------------------- EXTREMES
+  # --- Temperature
+  hottest_day:
+    base: tx_max
+    keywords: extreme
+
+  coldest_day:
+    base: tx_min
+    keywords: extreme
+
+  warmest_night:
+    base: tx_min
+    keywords: extreme
+
+  coldest_night:
+    base: tn_min
+    keywords: extreme
+
+  daily_temperature_range:
+    base: dtr
+    keywords: extreme
+
+  max_daily_temperature_range:
+    base: dtrmax
+    keywords: extreme
+
+  daily_temperature_range_variability:
+    base: dtrvar
+    keywords: extreme
+
+  extreme_daily_temperature_range:
+    base: etr
+    keywords: extreme
+
+  # --- Precipitation
+  wettest_day:
+    base: max_n_day_precipitation_amount
+    cf_attrs:
+      long_name: Maximum 1-day precipitation amount
+    parameters:
+      window: 1
+    keywords: extreme
+
+  wettest_3_days:
+    base: max_n_day_precipitation_amount
+    cf_attrs:
+      long_name: Maximum 3-day precipitation amount
+    parameters:
+      window: 3
+    keywords: extreme
+
+  wettest_5_days:
+    base: max_n_day_precipitation_amount
+    cf_attrs:
+      long_name: Maximum 5-day precipitation amount
+    parameters:
+      window: 5
+    keywords: extreme
+
+  #  ------------------------------------------------------------ COUNT (FIXED)
+  ice_days:
+    base: ice_days
+    parameters:
+      thresh: 0 degC
+    keywords: count fixed
+
+  frost_days:
+    base: frost_days
+    parameters:
+      thresh: 0 degC
+    keywords: count fixed
+
+  dry_days:
+    base: dry_days
+    parameters:
+      thresh: 1 mm/d
+    keywords: count fixed
+
+  consecutive_dry_days:
+    base: cdd
+    parameters:
+      thresh: 1 mm/d
+    keywords: count fixed
+
+  wet_days:
+    base: wetdays
+    parameters:
+      thresh: 1 mm/d
+    keywords: count fixed
+
+  consecutive_wet_days:
+    base: cwd
+    parameters:
+      thresh: 1 mm/d
+    cf_attrs:
+      long_name: "Maximum number of consecutive wet days (> {thresh})"
+    keywords: count fixed
+
+  #  --------------------------------------------------------------------- MEAN
+  average_temperature:
+    base: tg_mean
+    src_freq: 'MS'
+    keywords: mean
+
+  average_max_temperature:
+    base: tx_mean
+    src_freq: 'MS'
+    keywords: mean
+
+  average_min_temperature:
+    base: tn_mean
+    src_freq: 'MS'
+    keywords: mean
+
+  average_precipitation:
+    base: prcpavg
+    src_freq: 'MS'
+    keywords: mean
+
+  #  ---------------------------------------------------------------------- SUM
+
+  total_precipitation:
+    base: prcptot
+    src_freq: 'MS'
+    keywords: sum

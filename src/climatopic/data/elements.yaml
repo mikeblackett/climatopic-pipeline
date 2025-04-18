@@ -1,0 +1,9 @@
+temperature:
+  name: Temperature
+  description: The air temperature at surface level
+  domain: atmosphere
+
+precipitation:
+  name: Precipitation
+  description: Any product of the condensation of atmospheric water vapour falling under gravity
+  domain: atmosphere

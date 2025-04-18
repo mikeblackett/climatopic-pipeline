@@ -1,0 +1,201 @@
+doc: |
+  =====================
+  Climatopic Variables
+  =====================
+realm: atmos
+base: Indicator
+
+variables:
+  rainfall:
+    description: Total precipitation amount (all phases).
+    canonical_units: mm
+    cell_methods: 'time: sum'
+    standard_name: lwe_thickness_of_precipitation_amount
+
+indicators:
+  tas:
+    compute: tas
+    title: Daily mean temperature
+    abstract: >-
+      The average daily air temperature assuming a symmetrical temperature
+      distribution (tas = (tasmax + tasmin) / 2).
+    cf_attrs:
+      cell_methods: 'time: mid_range'
+      description: >-
+        Estimated daily mean air temperature from maximum and minimum
+        temperatures.
+      long_name: Daily mean air temperature at 1.5m
+      standard_name: air_temperature
+      units: degK
+    keywords: temperature
+
+  tasmax:
+    compute: tasmax
+    title: Daily maximum temperature
+    abstract: >-
+      The daily maximum air temperature observed between 0900 on day D and
+      0900 on day D+1.
+    cf_attrs:
+      cell_methods: 'time: maximum'
+      description: >-
+        The daily maximum air temperature observed between 0900 on day D and
+        0900 on day D+1.
+      long_name: Daily maximum air temperature at 1.5m
+      standard_name: air_temperature
+      units: degK
+    keywords: temperature
+
+  tasmin:
+    compute: tasmin
+    title: Daily minimum temperature
+    abstract: >-
+      The daily minimum air temperature observed between 0900 on day D-1 and
+      0900 on day D.
+    cf_attrs:
+      cell_methods: 'time: minimum'
+      description: >-
+        The daily minimum air temperature observed between 0900 on day D-1 and
+        0900 on day D.
+      long_name: Daily minimum air temperature at 1.5m
+      standard_name: air_temperature
+      units: degK
+    keywords: temperature
+
+  pr:
+    compute: pr
+    title: Daily precipitation flux
+    abstract: >-
+      The daily precipitation flux.
+    cf_attrs:
+      cell_methods: 'time: sum'
+      description: >-
+        The daily precipitation flux.
+      long_name: Daily precipitation flux
+      standard_name: precipitation_flux
+      units: kg m-2 s-1
+    parameters:
+      thresh: 1 mm/d
+    keywords: precipitation
+
+  tas_per:
+    compute: tas_per
+    title: Day-of-year percentiles of mean air temperature
+    abstract: >-
+      Percentiles of daily minimum air temperature, calculated over the
+      specified reference period using a rolling window centered on each
+      calendar day.
+    cf_attrs:
+      description: >-
+        Percentiles of daily mean air temperature, calculated over the 
+        specified reference period using a {window}-day rolling window 
+        centered on each calendar day.
+      long_name: >-
+        Percentiles of daily mean temperature calculated over the
+        {reference_period} using a rolling {window}-day window centered on
+        each calendar day. [degK]
+      standard_name: air_temperature
+      cell_methods: >-
+        time: other (comment: percentile calculated over days of year)
+      units: degK
+    parameters:
+      percentiles:
+        - 10
+        - 25
+        - 75
+        - 90
+      window: 5
+    keywords: temperature percentile
+
+  tasmax_per:
+    compute: tasmax_per
+    title: Day-of-year percentiles of maximum air temperature
+    abstract: >-
+      Percentiles of daily maximum air temperature, calculated over the 
+      specified reference period using a rolling window centered on each 
+      calendar day.
+    cf_attrs:
+      description: >-
+        Percentiles of daily maximum air temperature, calculated over the 
+        specified reference period using a {window}-day rolling window 
+        centered on each calendar day.
+      long_name: >-
+        Percentiles of daily maximum temperature calculated over the
+        {reference_period} using a rolling {window}-day window centered on
+        each calendar day. [degK]
+      cell_methods: >-
+        time: other (comment: percentile calculated over days of year)
+      standard_name: air_temperature
+      units: degK
+    parameters:
+      percentiles:
+        - 10
+        - 25
+        - 75
+        - 90
+      window: 5
+    keywords: temperature percentile
+
+  tasmin_per:
+    compute: tasmin_per
+    title: Day-of-year percentiles of minimum air temperature
+    abstract: >-
+      Percentiles of daily minimum air temperature, calculated over the 
+      specified reference period using a rolling window centered on each 
+      calendar day.
+    cf_attrs:
+      description: >-
+        Percentiles of daily minimum air temperature, calculated over the 
+        specified reference period using a {window}-day rolling window 
+        centered on each calendar day.
+      long_name: >-
+        Percentiles of daily minimum temperature calculated over the
+        {reference_period} using a rolling {window}-day window centered on
+        each calendar day. [degK]
+      cell_methods: >-
+        time: other (comment: percentile calculated over days of year)
+      standard_name: air_temperature
+      units: degK
+    parameters:
+      percentiles:
+        - 10
+        - 25
+        - 75
+        - 90
+      window: 5
+    keywords: temperature percentile
+
+  pr_per:
+    compute: pr_per
+    title: Day-of-year percentiles of precipitation flux
+    abstract: >-
+      Percentiles of daily precipitation flux, calculated over the 
+      specified reference period using a rolling window centered on each 
+      calendar day.
+    cf_attrs:
+      description: >-
+        Percentiles of daily precipitation flux, calculated over the 
+        specified reference period using a {window}-day rolling window 
+        centered on each calendar day.
+      long_name: >-
+        Percentiles of daily precipitation flux calculated over the
+        {reference_period} using a rolling {window}-day window centered on
+        each calendar day. [degK]
+      cell_methods: >-
+        time: other (comment: percentile calculated over days of year)
+      standard_name: precipitation_flux
+      units: kg m-2 s-1
+    parameters:
+      percentiles:
+        - 10
+        - 25
+        - 75
+        - 90
+        - 95
+        - 99
+      window: 5
+    keywords: precipitation percentile
+
+
+
+
+
