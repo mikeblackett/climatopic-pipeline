@@ -9,7 +9,9 @@ from xclim.core.calendar import percentile_doy
 from xclim.core.units import convert_units_to, declare_units
 
 
-class PercentileIndice(Protocol):
+class PercentileIndex(Protocol):
+    """Protocol for percentile index functions."""
+
     def __call__(
         self,
         *args,
@@ -86,7 +88,9 @@ def pr_per(
         Window size for the rolling window. Defaults to 5.
     reference_period : tuple of str, optional
         Reference period for the calculation. Defaults to None.
-
+    thresh : Quantified, optional
+        Precipitation threshold. Only values above this threshold are
+        considered in percentile calculations. Defaults to '1 mm/day'.
 
     Returns
     -------

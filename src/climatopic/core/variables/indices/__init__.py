@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ._percentile import (
-    PercentileIndice,
+    PercentileIndex,
     tas_per,
     tasmax_per,
     tasmin_per,
@@ -16,7 +16,7 @@ from ._simple import (
 )
 
 __all__ = [
-    'PercentileIndice',
+    'PercentileIndex',
     'pr',
     'pr_per',
     'rainfall',
