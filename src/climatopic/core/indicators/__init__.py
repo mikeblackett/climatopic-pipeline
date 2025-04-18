@@ -13,5 +13,5 @@ indicators = build_indicator_module_from_yaml(
     filename=Path(__file__).parent / 'indicators.yaml',
     indices=indices,
     mode='raise',
-    validate=False,
+    validate=Path('src/climatopic/data/schema.yml'),
 )
